@@ -1,4 +1,5 @@
 use prelude::*;
+use window::WindowIterator;
 use xcb;
 use monster::incubation::OwningRefMut;
 
@@ -27,24 +28,11 @@ impl <'a> Screen<'a> {
         })
     }
 
-    pub fn root_ref(&self) -> WindowRef {
+    pub fn root_ref(&'a self) -> WindowRef<'a> {
         WindowRef::from(self.conn, self.xcb.root())
     }
 
-    pub fn children_refs(&self) -> WindowIterator<'a> {
-        let tree = xcb::query_tree(self.conn.as_xcb(), self.xcb.root());
-        let tree = tree.get_reply().expect("tree");
-        let conn = self.conn;
-        
-        OwningRefMut::new(Box::new(tree), |tree| Box::new(
-            tree.children().iter().map(move |&id|
-                WindowRef::from(conn, id)
-            )
-        ) as Box<_>)
+    pub fn children_refs(&self) -> Result<WindowIterator<'a>, xcb::GenericError> {
+        WindowRef::from(self.conn, self.xcb.root()).children_refs()
     }
 }
-
-pub type WindowIterator<'a> = OwningRefMut<
-    xcb::QueryTreeReply,
-    Box<Iterator<Item=WindowRef<'a>> + 'a>
->;

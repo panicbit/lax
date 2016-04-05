@@ -1,4 +1,5 @@
 use xcb;
+use monster::incubation::OwningRefMut;
 use prelude::*;
 
 pub struct WindowRef<'a> {
@@ -36,7 +37,57 @@ impl <'a> WindowRef<'a> {
     pub fn to_owned() -> Window {
         unimplemented!()
     }
+
+    pub fn parent_ref(&self) -> Result<WindowRef<'a>, xcb::GenericError> {
+        self.tree().map(|t| t.parent_ref())
+    }
+
+    pub fn children_refs(&self) -> Result<WindowIterator<'a>, xcb::GenericError> {
+        self.tree().map(|t| t.children_refs())
+    }
+
+    pub fn tree(&self) -> Result<Tree<'a>, xcb::GenericError> {
+        Tree::from(self)
+    }
 }
+
+pub struct Tree<'a> {
+    conn: &'a Connection,
+    xcb: xcb::QueryTreeReply,
+}
+
+impl <'a> Tree<'a> {
+    fn from(window: &WindowRef<'a>) -> Result<Tree<'a>, xcb::GenericError> {
+        let tree = xcb::query_tree(window.conn.as_xcb(), window.id());
+        let tree = try!(tree.get_reply());
+
+        Ok(Tree {
+            conn: window.conn,
+            xcb: tree
+        })
+    }
+
+    pub fn parent_ref(&self) -> WindowRef<'a> {
+        WindowRef::from(self.conn, self.xcb.parent())
+    }
+
+    pub fn children_refs(self) -> WindowIterator<'a> {
+        let tree = self.xcb;
+        let conn = self.conn;
+
+        OwningRefMut::new(Box::new(tree), |tree| Box::new(
+            tree.children().iter().map(move |&id|
+                WindowRef::from(conn, id)
+            )
+        ) as Box<_>)
+    }
+
+}
+
+pub type WindowIterator<'a> = OwningRefMut<
+    xcb::QueryTreeReply,
+    Box<Iterator<Item=WindowRef<'a>> + 'a>
+>;
 
 pub struct Window {
     id: xcb::Window,
@@ -48,6 +99,7 @@ impl Window {
         unimplemented!()
     }
 }
+
 
 #[derive(Debug,Eq,PartialEq)]
 #[repr(u8)]
