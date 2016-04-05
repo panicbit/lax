@@ -42,6 +42,10 @@ impl Connection {
         Ok(WindowRef::from(self, reply.focus()))
     }
 
+    pub fn flush(&self) -> bool {
+        self.as_xcb().flush()
+    }
+
     pub fn as_xcb(&self) -> &xcb::Connection {
         &self.conn
     }
