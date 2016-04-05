@@ -1,0 +1,8 @@
+[package]
+authors = ["panicbit <panicbit.dev@gmail.com>"]
+name = "lax"
+version = "0.1.0"
+
+[dependencies]
+monster = "0.1.20"
+xcb = {git = "https://github.com/rtbo/rust-xcb.git"}
