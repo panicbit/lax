@@ -21,9 +21,7 @@ impl <'a> WindowRef<'a> {
     }
 
     pub fn attributes(&self) -> Result<Attributes, xcb::GenericError> {
-        let attrs = xcb::get_window_attributes(self.conn.as_xcb(), self.id);
-        let attrs = try!(attrs.get_reply());
-        Ok(Attributes::from_xcb(attrs))
+        Attributes::from(self)
     }
 
     pub fn focus(&self, revert_focus: RevertFocus) {
@@ -127,6 +125,12 @@ pub struct Attributes {
 }
 
 impl Attributes {
+    pub fn from<'a>(window: &WindowRef<'a>) -> Result<Attributes, xcb::GenericError> {
+        let attrs = xcb::get_window_attributes(window.conn.as_xcb(), window.id());
+        let attrs = try!(attrs.get_reply());
+        Ok(Attributes::from_xcb(attrs))
+    }
+
     fn from_xcb(attrs: xcb::GetWindowAttributesReply) -> Attributes {
         Attributes {
             map_state: MapState::from_xcb(attrs.map_state() as u32)
