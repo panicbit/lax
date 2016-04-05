@@ -24,6 +24,15 @@ impl <'a> WindowRef<'a> {
         Ok(Attributes::from_xcb(attrs))
     }
 
+    pub fn focus(&self, revert_focus: RevertFocus) {
+        xcb::set_input_focus(
+            self.conn.as_xcb(),
+            revert_focus as u8,
+            self.id(),
+            xcb::TIME_CURRENT_TIME
+        );
+    }
+
     pub fn to_owned() -> Window {
         unimplemented!()
     }
@@ -70,4 +79,12 @@ impl Attributes {
             map_state: MapState::from_xcb(attrs.map_state() as u32)
         }
     }
+}
+
+#[derive(Debug,Eq,PartialEq)]
+#[repr(u8)]
+pub enum RevertFocus {
+    None        = 0,
+    PointerRoot = 1,
+    Parent      = 2,
 }

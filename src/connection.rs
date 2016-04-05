@@ -3,6 +3,7 @@ use std::cmp::max;
 use xcb;
 
 use xcb::ConnResult;
+use window::RevertFocus;
 
 pub struct Connection {
     conn: xcb::Connection,
