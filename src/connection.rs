@@ -37,4 +37,8 @@ impl Connection {
     pub fn as_xcb(&self) -> &xcb::Connection {
         &self.conn
     }
+
+    pub fn into_xcb(self) -> xcb::Connection {
+        self.conn
+    }
 }
