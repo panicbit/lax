@@ -27,6 +27,10 @@ impl <'a> Screen<'a> {
         })
     }
 
+    pub fn root_ref(&self) -> WindowRef {
+        WindowRef::from(self.conn, self.xcb.root())
+    }
+
     pub fn children_refs(&self) -> WindowIterator<'a> {
         let tree = xcb::query_tree(self.conn.as_xcb(), self.xcb.root());
         let tree = tree.get_reply().expect("tree");
