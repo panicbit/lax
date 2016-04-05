@@ -28,7 +28,7 @@ impl <'a> Screen<'a> {
         })
     }
 
-    pub fn root_ref(&'a self) -> WindowRef<'a> {
+    pub fn root_ref(&self) -> WindowRef<'a> {
         WindowRef::from(self.conn, self.xcb.root())
     }
 
