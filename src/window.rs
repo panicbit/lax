@@ -2,6 +2,7 @@ use xcb;
 use monster::incubation::OwningRefMut;
 use prelude::*;
 
+#[derive(Copy,Clone)]
 pub struct WindowRef<'a> {
     conn: &'a Connection,
     id: xcb::Window
