@@ -7,7 +7,7 @@ pub struct WindowRef<'a> {
 }
 
 impl <'a> WindowRef<'a> {
-    pub fn new(conn: &Connection, id: xcb::Window) -> WindowRef {
+    pub fn from(conn: &Connection, id: xcb::Window) -> WindowRef {
         WindowRef {
             conn: conn,
             id: id

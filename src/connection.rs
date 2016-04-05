@@ -34,6 +34,13 @@ impl Connection {
         self.preferred_screen
     }
 
+    pub fn focused_window_ref(&self) -> Result<WindowRef, xcb::GenericError> {
+        let cookie = xcb::get_input_focus(self.as_xcb());
+        let reply = try!(cookie.get_reply());
+
+        Ok(WindowRef::from(self, reply.focus()))
+    }
+
     pub fn as_xcb(&self) -> &xcb::Connection {
         &self.conn
     }

@@ -34,7 +34,7 @@ impl <'a> Screen<'a> {
         
         OwningRefMut::new(Box::new(tree), |tree| Box::new(
             tree.children().iter().map(move |&id|
-                WindowRef::new(conn, id)
+                WindowRef::from(conn, id)
             )
         ) as Box<_>)
     }
