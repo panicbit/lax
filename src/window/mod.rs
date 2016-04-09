@@ -54,6 +54,14 @@ impl <'a> WindowRef<'a> {
     pub fn tree(&self) -> Result<Tree<'a>, xcb::GenericError> {
         Tree::from(self)
     }
+
+    pub fn destroy(self) {
+        xcb::destroy_window(self.conn.as_xcb(), self.id());
+    }
+
+    pub fn kill_client(self) {
+        xcb::kill_client(self.conn.as_xcb(), self.id());
+    }
 }
 
 pub type WindowIterator<'a> = OwningRefMut<
