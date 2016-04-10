@@ -66,6 +66,10 @@ impl <'a> WindowRef<'a> {
     pub fn map(self) {
         xcb::map_window(self.conn.as_xcb(), self.id());
     }
+
+    pub fn unmap(self) {
+        xcb::unmap_window(self.conn.as_xcb(), self.id());
+    }
 }
 
 pub type WindowIterator<'a> = OwningRefMut<
