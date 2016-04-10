@@ -70,6 +70,13 @@ impl <'a> WindowRef<'a> {
     pub fn unmap(self) {
         xcb::unmap_window(self.conn.as_xcb(), self.id());
     }
+
+    pub fn is_mapped(self) -> bool {
+        self.attributes()
+            .as_ref()
+            .map(Attributes::is_mapped)
+            .unwrap_or(false)
+    }
 }
 
 pub type WindowIterator<'a> = OwningRefMut<

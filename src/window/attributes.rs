@@ -20,4 +20,8 @@ impl Attributes {
             override_redirect: attrs.override_redirect()
         }
     }
+
+    pub fn is_mapped(&self) -> bool {
+        self.map_state == MapState::Viewable
+    }
 }
