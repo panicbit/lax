@@ -62,6 +62,10 @@ impl <'a> WindowRef<'a> {
     pub fn kill_client(self) {
         xcb::kill_client(self.conn.as_xcb(), self.id());
     }
+
+    pub fn map(self) {
+        xcb::map_window(self.conn.as_xcb(), self.id());
+    }
 }
 
 pub type WindowIterator<'a> = OwningRefMut<
